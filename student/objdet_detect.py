@@ -14,6 +14,7 @@
 import numpy as np
 import torch
 from easydict import EasyDict as edict
+import argparse
 
 # add project directory to python path to enable relative imports
 import os
@@ -29,9 +30,11 @@ from tools.objdet_models.resnet.utils.evaluation_utils import decode, post_proce
 from tools.objdet_models.darknet.models.darknet2pytorch import Darknet as darknet
 from tools.objdet_models.darknet.utils.evaluation_utils import post_processing_v2
 
+from tools.objdet_models.resnet.utils.torch_utils import _sigmoid
 
 # load model-related parameters into an edict
-def load_configs_model(model_name='darknet', configs=None):
+#model_name='darknet'
+def load_configs_model(model_name, configs=None):
 
     # init config file, if none has been passed
     if configs==None:
@@ -61,6 +64,38 @@ def load_configs_model(model_name='darknet', configs=None):
         ####### ID_S3_EX1-3 START #######     
         #######
         print("student task ID_S3_EX1-3")
+        configs.model_path = os.path.join(parent_path, 'tools', 'objdet_models', 'resnet')
+        configs.pretrained_filename = os.path.join(configs.model_path, 'pretrained', 'fpn_resnet_18_epoch_300.pth')
+        configs.arch = 'fpn_resnet'
+        configs.batch_size = 4
+        #configs.cfgfile = os.path.join(configs.model_path, 'config', 'complex_yolov4.cfg')
+        configs.conf_thresh = 0.5
+        configs.distributed = False
+        configs.img_size = 608
+        configs.nms_thresh = 0.4
+        configs.num_samples = None
+        configs.num_workers = 4
+        configs.pin_memory = True
+        configs.use_giou_loss = False
+        configs.K=50
+
+        configs.head_conv = 64
+        configs.down_ratio = 4
+        configs.peak_thresh = 0.2
+        configs.imagenet_pretrained = False
+        configs.num_classes = 3
+        configs.num_center_offset = 2
+        configs.num_z = 1
+        configs.num_dim = 3
+        configs.num_direction = 2  # sin, cos
+        configs.heads = {
+            'hm_cen': configs.num_classes,
+            'cen_offset': configs.num_center_offset,
+            'direction': configs.num_direction,
+            'z_coor': configs.num_z,
+            'dim': configs.num_dim
+        }
+        configs.num_layers = 18   # As suggessted by mentor from Udacity
 
         #######
         ####### ID_S3_EX1-3 END #######     
@@ -89,7 +124,8 @@ def load_configs(model_name='fpn_resnet', configs=None):
     configs.lim_z = [-1, 3]
     configs.lim_r = [0, 1.0] # reflected lidar intensity
     configs.bev_width = 608  # pixel resolution of bev image
-    configs.bev_height = 608 
+    configs.bev_height = 608
+    configs.min_iou = 0.5
 
     # add model-dependent parameters
     configs = load_configs_model(model_name, configs)
@@ -118,6 +154,10 @@ def create_model(configs):
         ####### ID_S3_EX1-4 START #######     
         #######
         print("student task ID_S3_EX1-4")
+        print("using FPN_ResNet")
+
+        model = fpn_resnet.get_pose_net(configs.num_layers, configs.heads, configs.head_conv, configs.imagenet_pretrained)
+        
 
         #######
         ####### ID_S3_EX1-4 END #######     
@@ -167,7 +207,19 @@ def detect_objects(input_bev_maps, model, configs):
             ####### ID_S3_EX1-5 START #######     
             #######
             print("student task ID_S3_EX1-5")
-
+            # perform post-processing
+            outputs = model(input_bev_maps)
+            outputs['hm_cen'] = _sigmoid(outputs['hm_cen'])
+            outputs['cen_offset'] = _sigmoid(outputs['cen_offset'])
+            # detections size (batch_size, K, 10)
+            detections = decode(outputs['hm_cen'], outputs['cen_offset'], outputs['direction'], outputs['z_coor'],
+                                outputs['dim'], K=configs.K)
+            detections = detections.cpu().numpy().astype(np.float32)
+            #detections = post_processing(detections, configs.num_classes, configs.down_ratio, configs.peak_thresh)
+            detections = post_processing(detections, configs)
+            detections = detections[0][1]
+            #print("################## DETECTIONS VALUES ########################")
+            #print(detections)
             #######
             ####### ID_S3_EX1-5 END #######     
 
@@ -180,12 +232,21 @@ def detect_objects(input_bev_maps, model, configs):
     objects = [] 
 
     ## step 1 : check whether there are any detections
-
+    if len(detections) != 0:
         ## step 2 : loop over all detections
-        
+        for obj in detections:
             ## step 3 : perform the conversion using the limits for x, y and z set in the configs structure
-        
+            #returns of the coordinates from the bev side
+            id, bev_x, bev_y, z, h, bev_w, bev_h, yaw = obj
+            #Convert the bev to car coordinates
+            x = bev_y / configs.bev_height * (configs.lim_x[1] - configs.lim_x[0]) 
+            y = bev_x / configs.bev_width * (configs.lim_y[1] - configs.lim_y[0]) - (configs.lim_y[1] - configs.lim_y[0])/2.0
+            w = bev_w / configs.bev_width *(configs.lim_y[1] - configs.lim_y[0])
+            h = bev_h / configs.bev_height *(configs.lim_x[1] - configs.lim_x[0])
+
             ## step 4 : append the current object to the 'objects' array
+            if x <= configs.lim_x[1] and x >= configs.lim_x[0] and y <= configs.lim_y[1] and y >= configs.lim_y[0] and z <= configs.lim_z[1] and z >= configs.lim_z[0]:
+                objects.append([1, x, y, 0.0, 1.50, w, h, yaw])
         
     #######
     ####### ID_S3_EX2 START #######   

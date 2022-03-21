@@ -13,7 +13,7 @@
 # general package imports
 import numpy as np
 import matplotlib
-matplotlib.use('wxagg') # change backend so that figure maximizing works on Mac as well     
+#matplotlib.use('wxagg') # change backend so that figure maximizing works on Mac as well     
 import matplotlib.pyplot as plt
 
 import torch
@@ -49,17 +49,40 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
             print("student task ID_S4_EX1 ")
 
             ## step 1 : extract the four corners of the current label bounding-box
+            x_center = label.box.center_x
+            y_center = label.box.center_y
+            z_center = label.box.center_z
+            length = label.box.length
+            width = label.box.width
+            yaw1 = label.box.heading
+
+            box_label = tools.compute_box_corners(x_center,y_center,width,length,yaw1)
             
             ## step 2 : loop over all detected objects
+            for object in detections:
 
                 ## step 3 : extract the four corners of the current detection
-                
+                _id, x, y, z, _h, w, l, yaw  =object
+                box_object = tools.compute_box_corners(x,y,w,l,yaw)
                 ## step 4 : computer the center distance between label and detection bounding-box in x, y, and z
-                
-                ## step 5 : compute the intersection over union (IOU) between label and detection bounding-box
-                
+                distance_x = np.array(x_center - x)
+                distance_y = np.array(y_center - y)
+                distance_z = np.array(z_center - z)
+                ## step 5 : compute the intersection over union (IOU) between label and detection bounding-box               
+                try:
+                    polygon_label = Polygon(box_label)
+                    polygon_object = Polygon(box_object)
+
+                    intersection = polygon_label.intersection(polygon_object).area
+                    union = polygon_label.union(polygon_object).area
+                    iou = intersection/union
+                    print(iou)
+                except:
+                    print("Error in caluclation")
                 ## step 6 : if IOU exceeds min_iou threshold, store [iou,dist_x, dist_y, dist_z] in matches_lab_det and increase the TP count
-                
+                if iou > min_iou:
+                    matches_lab_det.append([iou,distance_x,distance_y,distance_z])
+                    true_positives +=1
             #######
             ####### ID_S4_EX1 END #######     
             
@@ -77,13 +100,13 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
     # compute positives and negatives for precision/recall
     
     ## step 1 : compute the total number of positives present in the scene
-    all_positives = 0
+    all_positives = labels_valid.sum()
 
     ## step 2 : compute the number of false negatives
-    false_negatives = 0
+    false_negatives = all_positives - true_positives
 
     ## step 3 : compute the number of false positives
-    false_positives = 0
+    false_positives = len(detections) - true_positives
     
     #######
     ####### ID_S4_EX2 END #######     
@@ -105,18 +128,22 @@ def compute_performance_stats(det_performance_all):
         ious.append(item[0])
         center_devs.append(item[1])
         pos_negs.append(item[2])
-    
+    pos_negs_arr = np.asarray(pos_negs)
     ####### ID_S4_EX3 START #######     
     #######    
     print('student task ID_S4_EX3')
 
     ## step 1 : extract the total number of positives, true positives, false negatives and false positives
-    
+    positives = sum(pos_negs_arr[:,0])
+    true_positives = sum(pos_negs_arr[:,1])
+    false_negatives = sum(pos_negs_arr[:,2])
+    false_positives = sum(pos_negs_arr[:,3])
+    print(false_positives)
     ## step 2 : compute precision
-    precision = 0.0
+    precision = true_positives/(true_positives + false_positives)
 
     ## step 3 : compute recall 
-    recall = 0.0
+    recall = true_positives /(true_positives + false_negatives)
 
     #######    
     ####### ID_S4_EX3 END #######     

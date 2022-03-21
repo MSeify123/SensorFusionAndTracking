@@ -52,18 +52,20 @@ def show_pcl(pcl,cnt_frame):
     pcd.points = o3d.utility.Vector3dVector(pcl[:,0:3])
 
     # step 4 : for the first frame, add the pcd instance to visualization using add_geometry; for all other frames, use update_geometry instead
-    if cnt_frame == 0:
-        op3dView.add_geometry(pcd)
-    else:
-        op3dView.update_geometry(pcd)
+    #if cnt_frame == 0:
+    #    op3dView.add_geometry(pcd)
+    #else:
+    #    op3dView.update_geometry(pcd)
+    op3dView.add_geometry(pcd)
+    op3dView.update_geometry(pcd)
 
     # step 5 : visualize point cloud and keep window open until right-arrow is pressed (key-code 262)
 
     def keyCallBack(op3dView):
         #Closes the complete window
-        #op3dView.destroy_window() 
+        op3dView.destroy_window() 
         # prepare for the next frame
-        op3dView.close()
+        #op3dView.close()
         print("#####################################################################")
         #return
     
@@ -71,7 +73,7 @@ def show_pcl(pcl,cnt_frame):
     op3dView.register_key_callback(262,keyCallBack)
     op3dView.update_renderer()
     op3dView.poll_events()    
-    op3dView.run() 
+    #op3dView.run() 
 
     #######
     ####### ID_S1_EX2 END #######     
@@ -190,11 +192,11 @@ def bev_from_pcl(lidar_pcl, configs,cnt_frame):
     img_intensity = intensity_map * 256
     img_intensity = img_intensity.astype(np.uint8)
 
-    while(1):
-        cv2.imshow('img_intensity', img_intensity)
-        if cv2.waitKey(10) & 0xFF == 27:
-            break
-    cv2.destroyAllWindows()
+    #while(1):
+    #    cv2.imshow('img_intensity', img_intensity)
+    #    if cv2.waitKey(10) & 0xFF == 27:
+    #        break
+    #cv2.destroyAllWindows()
 
 
     #######
@@ -211,18 +213,19 @@ def bev_from_pcl(lidar_pcl, configs,cnt_frame):
     ## step 2 : assign the height value of each unique entry in lidar_top_pcl to the height map 
     ##          make sure that each entry is normalized on the difference between the upper and lower height defined in the config file
     ##          use the lidar_pcl_top data structure from the previous task to access the pixels of the height_map
-    _,idx_height_unique = np.unique(lidar_pcl_top[:,0:2], axis = 1, return_index=1)
+    _,idx_height_unique = np.unique(lidar_pcl_top[:,0:2], axis = 0, return_index=1)
     lidar_pcl_hei = lidar_pcl_top[idx_height_unique]
+    print(lidar_pcl_hei.shape)
     height_map[np.int_(lidar_pcl_hei[:,0]), np.int_(lidar_pcl_hei[:,1])] = lidar_pcl_hei[:,2] / float(np.abs(configs.lim_z[1] - configs.lim_z[0]))
     ## step 3 : temporarily visualize the intensity map using OpenCV to make sure that vehicles separate well from the background
     img_height = height_map * 256
     img_height = img_height.astype(np.uint8)
 
-    while(1):
-        cv2.imshow('img_height', img_height)
-        if cv2.waitKey(10) & 0xFF == 27:
-            break
-    cv2.destroyAllWindows()
+    #while(1):
+    #    cv2.imshow('img_height', img_height)
+    #    if cv2.waitKey(10) & 0xFF == 27:
+    #        break
+    #cv2.destroyAllWindows()
 
 
     #######
