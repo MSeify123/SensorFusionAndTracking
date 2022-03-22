@@ -153,7 +153,9 @@ def bev_from_pcl(lidar_pcl, configs,cnt_frame):
     lidar_pcl_cpy[:,0] = np.int_(np.floor(lidar_pcl_cpy[:,0] / bev_discret))
 
     # step 3 : perform the same operation as in step 2 for the y-coordinates but make sure that no negative bev-coordinates occur
-    lidar_pcl_cpy[:, 1] = np.int_(np.floor(lidar_pcl_cpy[:, 1] / bev_discret))
+    lidar_pcl_cpy[:, 1] = np.int_(np.floor(lidar_pcl_cpy[:, 1] / bev_discret) + (configs.bev_width + 1) / 2)
+    
+    lidar_pcl_cpy[:, 2] = lidar_pcl_cpy[:, 2] - configs.lim_z[0] 
     
     lidar_pcl_cpy[:, 1] = np.where(lidar_pcl_cpy[:, 1] < 0, 0, lidar_pcl_cpy[:, 1])
     
