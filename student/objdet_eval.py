@@ -65,9 +65,9 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
                 _id, x, y, z, _h, w, l, yaw  =object
                 box_object = tools.compute_box_corners(x,y,w,l,yaw)
                 ## step 4 : computer the center distance between label and detection bounding-box in x, y, and z
-                distance_x = np.array(x_center - x)
-                distance_y = np.array(y_center - y)
-                distance_z = np.array(z_center - z)
+                distance_x = np.array(x_center - x).item()
+                distance_y = np.array(y_center - y).item()
+                distance_z = np.array(z_center - z).item()
                 ## step 5 : compute the intersection over union (IOU) between label and detection bounding-box               
                 try:
                     polygon_label = Polygon(box_label)
