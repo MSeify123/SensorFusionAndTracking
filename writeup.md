@@ -71,12 +71,18 @@ I added couple of pictures showing different views of vehicles according to perc
 As I noted, the model has detected only two vehicles out of 3.
 
 # Project Intructions Step 4
+
 # Precision and recall
 configs_det.use_labels_as_objects = False
+
 ![2022-03-23_19h38_39](https://user-images.githubusercontent.com/73642186/159772279-abab9f75-bef9-487b-812b-957c50bb276b.png)
+
 precision = 0.9644128113879004, recall = 0.8856209150326797
 
 # Precision and recall
+
 configs_det.use_labels_as_objects = True
+
 ![2022-03-23_19h42_41](https://user-images.githubusercontent.com/73642186/159773028-228c760a-d0a9-463a-bdd4-004be33349b8.png)
+
 precision = 1.0, recall = 1.0
