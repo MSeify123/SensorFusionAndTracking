@@ -37,6 +37,7 @@ I added couple of pictures showing different views of vehicles according to perc
 
 ## Attachement of results according to project instructions
 # Project instructions Step 1
+
 # Range Image Result
 ![2022-03-23_18h49_17](https://user-images.githubusercontent.com/73642186/159763811-8b061a3e-c822-441b-955d-cafcd0bab00f.png)
 # PCL Image Result
@@ -49,7 +50,9 @@ I added couple of pictures showing different views of vehicles according to perc
 ![d](https://user-images.githubusercontent.com/73642186/159764694-cb6edd2e-c813-40c1-999b-d666c43eebb3.PNG)
 ![e](https://user-images.githubusercontent.com/73642186/159764697-b309903f-6a40-452b-9792-548f98d1f5e8.PNG)
 
-# Project instructions Step 2
+
+Project instructions Step 2
+
 # BEV Image result
 ![2022-03-23_19h04_53](https://user-images.githubusercontent.com/73642186/159766487-95af1f6c-87e0-42c6-bded-dc20a46a681b.png)
 
@@ -68,7 +71,9 @@ I added couple of pictures showing different views of vehicles according to perc
 # Project Intructions Step 3
 # Vehicle Detection results
 ![2022-03-23_19h18_55](https://user-images.githubusercontent.com/73642186/159769575-d13ee299-2243-42b7-9527-76239a930233.png)
+
 As I noted, the model has detected only two vehicles out of 3.
+
 
 # Project Intructions Step 4
 
