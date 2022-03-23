@@ -34,3 +34,6 @@ Plausability checks to guarantee sensors performance.
 
 NOTE:
 I added couple of pictures showing different views of vehicles according to perceptions and angle.
+
+
+###Range Image
