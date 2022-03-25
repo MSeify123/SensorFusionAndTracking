@@ -44,11 +44,12 @@ I added couple of pictures showing different views of vehicles according to perc
 ![2022-03-23_18h52_54](https://user-images.githubusercontent.com/73642186/159764531-337c316b-7672-4ac3-856f-a203553db843.png)
 
 # Examples of vehicles with different views and intensity
-![a](https://user-images.githubusercontent.com/73642186/159764683-20d286ed-7b65-4b46-b7a7-72b6e08778b1.PNG)
-![b](https://user-images.githubusercontent.com/73642186/159764687-ad92cfbb-ea86-454b-be1b-b25ce93184cd.PNG)
-![c](https://user-images.githubusercontent.com/73642186/159764690-3d610dd9-8b33-4538-b118-00673bf3c6da.PNG)
-![d](https://user-images.githubusercontent.com/73642186/159764694-cb6edd2e-c813-40c1-999b-d666c43eebb3.PNG)
-![e](https://user-images.githubusercontent.com/73642186/159764697-b309903f-6a40-452b-9792-548f98d1f5e8.PNG)
+![e](https://user-images.githubusercontent.com/73642186/160209548-6803e670-0f90-4e97-a3cf-8ff14f523d9a.PNG)
+![a](https://user-images.githubusercontent.com/73642186/160209552-ca35b69a-bc7e-401b-a666-098b9a3a9ad5.PNG)
+![b](https://user-images.githubusercontent.com/73642186/160209554-13b40f89-b2f7-431b-9d28-0c7c0e76f746.PNG)
+![c](https://user-images.githubusercontent.com/73642186/160209555-70d6bd43-aecb-43f5-a890-f6f703d5dd8f.PNG)
+![d](https://user-images.githubusercontent.com/73642186/160209556-96ff027f-927a-41f5-9650-4942de20c40b.PNG)
+
 
 
 Project instructions Step 2
